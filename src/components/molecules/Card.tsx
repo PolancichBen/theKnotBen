@@ -79,10 +79,10 @@ export const Card: FC<Product & { cyTag: string }> = ({
         </Section>
         <Section>
           {showAdditionalInfo ? (
-            <>
+            <Section data-cy={`${cyTag}-product-details`}>
               {brandName && <Span>Brand: {brandName}</Span>}
               {price && <Span>Price: {price}</Span>}
-            </>
+            </Section>
           ) : (
             <Span>Click to see more information</Span>
           )}

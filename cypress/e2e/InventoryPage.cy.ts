@@ -53,6 +53,18 @@ describe('Inventory Page', () => {
     cy.get('[data-cy="products-section"]').children().should('have.length', 25);
   });
 
+  it('Properly Shows Product Details', () => {
+    cy.intercept('/products').as('fetchProducts');
+    cy.visit('/');
+    cy.wait('@fetchProducts');
+    cy.get('[data-cy="product-card-0-product-details"]').should('not.exist');
+    cy.get('[data-cy="product-card-0"]').click();
+    cy.get('[data-cy="product-card-0-product-details"]').should('exist');
+    cy.get('[data-cy="product-card-0"]').should('contain', 'Price');
+    cy.get('[data-cy="product-card-0"]').click();
+    cy.get('[data-cy="product-card-0-product-details"]').should('not.exist');
+  });
+
   it('Properly Paginates Products', () => {
     cy.intercept('/products').as('fetchProducts');
     cy.visit('/');
