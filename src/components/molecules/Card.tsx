@@ -37,7 +37,8 @@ const Section = styled.div<{ center?: boolean }>`
   display: flex;
   flex-direction: column;
   text-align: left;
-  ${({ center }) => center && `align-items: center;`}
+  ${({ center }) =>
+    center && `align-items: center; text-align: center; width: 100%;`}
 `;
 
 const Span = styled.span``;

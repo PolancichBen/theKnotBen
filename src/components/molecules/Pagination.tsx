@@ -35,17 +35,29 @@ export const Pagination: FC<PaginationProps> = ({
   setCurrentPage,
 }) => {
   return (
-    <Container>
-      <Button onClick={() => setCurrentPage(currentPage - 1)}>Previous</Button>
+    <Container data-cy="pagination-section">
+      <Button
+        data-cy="pagination-prev"
+        onClick={() => setCurrentPage(currentPage - 1)}
+      >
+        Previous
+      </Button>
       {Array.from({ length: numberOfPages }, (v, i) => i).map((index) => (
         <Button
+          data-cy={`pagination-${index + 1}`}
+          key={`${index}-pagination`}
           selected={currentPage === index}
           onClick={() => setCurrentPage(index + 1)}
         >
           {index + 1}
         </Button>
       ))}
-      <Button onClick={() => setCurrentPage(currentPage + 1)}>Next</Button>
+      <Button
+        data-cy="pagination-next"
+        onClick={() => setCurrentPage(currentPage + 1)}
+      >
+        Next
+      </Button>
     </Container>
   );
 };

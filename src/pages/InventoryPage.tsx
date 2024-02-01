@@ -126,6 +126,7 @@ export const InventoryPage: FC<InventoryPageProps> = () => {
       <Card
         key={ix}
         name={product.name}
+        data-cy={`product-card-${ix}`}
         price={product.price}
         type={product.type}
         image={product.image}
@@ -154,6 +155,7 @@ export const InventoryPage: FC<InventoryPageProps> = () => {
                   <Select
                     style={{ marginLeft: '10px' }}
                     name="type"
+                    data-cy="product-type"
                     value={productType}
                     onChange={(e) =>
                       setProductType(e.target.value as Product['type'])
@@ -171,6 +173,7 @@ export const InventoryPage: FC<InventoryPageProps> = () => {
                   <Input
                     style={{ marginLeft: '10px' }}
                     name="search"
+                    data-cy="input-search"
                     placeholder="Search for a product"
                     type="text"
                     value={productSearch}
@@ -182,6 +185,7 @@ export const InventoryPage: FC<InventoryPageProps> = () => {
                   <Select
                     style={{ marginLeft: '10px' }}
                     name="itemsPerPage"
+                    data-cy="items-per-page"
                     value={numberOfProducts}
                     onChange={(e) => setNumberOfProducts(+e.target.value)}
                   >
@@ -194,7 +198,9 @@ export const InventoryPage: FC<InventoryPageProps> = () => {
                 </Label>
               </Form>
             </SearchSection>
-            <ProductSection>{renderProducts()}</ProductSection>
+            <ProductSection data-cy="products-section">
+              {renderProducts()}
+            </ProductSection>
             <Pagination
               numberOfPages={numberOfPages}
               currentPage={page}
