@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
 
@@ -74,17 +74,6 @@ export const InventoryPage: FC<InventoryPageProps> = () => {
     setProductSearch(e.target.value);
   };
 
-  const debouncedResults = useMemo(() => {
-    return _.debounce(handleProductSearchChange, 1500);
-  }, []);
-
-  // Cancel debounced results on unmount
-  useEffect(() => {
-    return () => {
-      debouncedResults.cancel();
-    };
-  });
-
   // Filter products based on search
   if (productSearch.length) {
     filteredProducts = filteredProducts.filter((product) =>
@@ -109,9 +98,7 @@ export const InventoryPage: FC<InventoryPageProps> = () => {
     setNumberOfPages(Math.ceil(validProducts.length / numberOfProducts));
   }, [filteredProducts, inventory, inventory.length, numberOfProducts]);
 
-  const handlePageChange = (e: number) =>
-    // Subtract 1 because arrays are 0 indexed
-    setPage(e - 1);
+  const handlePageChange = (e: number) => setPage(e);
 
   const renderProducts = useCallback(() => {
     let validProducts = filteredProducts.length ? filteredProducts : inventory;
@@ -126,7 +113,7 @@ export const InventoryPage: FC<InventoryPageProps> = () => {
       <Card
         key={ix}
         name={product.name}
-        data-cy={`product-card-${ix}`}
+        cyTag={`product-card-${ix}`}
         price={product.price}
         type={product.type}
         image={product.image}
@@ -137,7 +124,7 @@ export const InventoryPage: FC<InventoryPageProps> = () => {
   }, [filteredProducts, inventory, numberOfProducts, page]);
 
   const validTypes = inventory.length
-    ? [...new Set(inventory.map((product) => product?.type)), 'ALL']
+    ? ['ALL', ...new Set(inventory.map((product) => product?.type))]
     : [];
 
   return (
@@ -177,7 +164,7 @@ export const InventoryPage: FC<InventoryPageProps> = () => {
                     placeholder="Search for a product"
                     type="text"
                     value={productSearch}
-                    onChange={debouncedResults}
+                    onChange={handleProductSearchChange}
                   />
                 </Label>
                 <Label htmlFor="page">

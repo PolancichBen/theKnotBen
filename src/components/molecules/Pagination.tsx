@@ -38,7 +38,10 @@ export const Pagination: FC<PaginationProps> = ({
     <Container data-cy="pagination-section">
       <Button
         data-cy="pagination-prev"
-        onClick={() => setCurrentPage(currentPage - 1)}
+        disabled={currentPage === 0}
+        onClick={
+          currentPage !== 0 ? () => setCurrentPage(currentPage - 1) : () => {}
+        }
       >
         Previous
       </Button>
@@ -47,14 +50,19 @@ export const Pagination: FC<PaginationProps> = ({
           data-cy={`pagination-${index + 1}`}
           key={`${index}-pagination`}
           selected={currentPage === index}
-          onClick={() => setCurrentPage(index + 1)}
+          onClick={() => setCurrentPage(index)}
         >
           {index + 1}
         </Button>
       ))}
       <Button
         data-cy="pagination-next"
-        onClick={() => setCurrentPage(currentPage + 1)}
+        disabled={currentPage + 1 >= numberOfPages}
+        onClick={
+          currentPage + 1 < numberOfPages
+            ? () => setCurrentPage(currentPage + 1)
+            : () => {}
+        }
       >
         Next
       </Button>

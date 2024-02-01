@@ -43,22 +43,23 @@ const Section = styled.div<{ center?: boolean }>`
 
 const Span = styled.span``;
 
-export const Card: FC<Product> = ({
+export const Card: FC<Product & { cyTag: string }> = ({
   name,
   type,
   price,
   image,
   storeName,
   brandName,
+  cyTag,
 }) => {
   const [showAdditionalInfo, setShowAdditionalInfo] = useState<boolean>(false);
 
   const toggleClick = () => setShowAdditionalInfo(!showAdditionalInfo);
 
   return (
-    <Container>
+    <Container data-cy={cyTag}>
       <Button onClick={toggleClick}>
-        <H3>{name}</H3>
+        <H3 data-cy={`${cyTag}-name`}>{name}</H3>
         {image ? (
           <Image
             style={{ alignSelf: 'center', marginBottom: '10px' }}

@@ -4,8 +4,8 @@ describe('Inventory Page', () => {
     cy.get('h1').should('contain', 'Inventory');
   });
 
-  cy.intercept('/products').as('fetchProducts');
   it('Properly Fetches Products on Load', () => {
+    cy.intercept('/products').as('fetchProducts');
     cy.visit('/');
     cy.wait('@fetchProducts').then(({ response }) => {
       expect(response?.statusCode).to.equal(200);
@@ -14,6 +14,7 @@ describe('Inventory Page', () => {
   });
 
   it('Properly Displays UI with Products', () => {
+    cy.intercept('/products').as('fetchProducts');
     cy.visit('/');
     cy.wait('@fetchProducts');
     cy.get('h2').should('contain', 'Products');
@@ -24,51 +25,52 @@ describe('Inventory Page', () => {
 
     // Validate Cards Section
     cy.get('[data-cy="products-section"]').should('exist');
-    cy.get('[data-cy="product-card-1"]').should('exist');
+    cy.get('[data-cy="product-card-0"]').should('exist');
 
     // Validate Pagination Section
     cy.get('[data-cy="pagination-section"]').should('exist');
   });
 
   it('Properly Filters Products', () => {
+    cy.intercept('/products').as('fetchProducts');
     cy.visit('/');
     cy.wait('@fetchProducts');
-    const selectedValue = cy.get('[data-cy="product-type"]').select(1);
-    cy.get('[data-cy="product-card-1"]')
-      .should('exist')
-      .and('contain', selectedValue);
+    cy.get('[data-cy="product-type"]').select(1);
+    cy.get('[data-cy="product-card-0"]').should('exist');
 
     // Hardcode Breakfast Search
-    const searchInput = cy.get('[data-cy="input-search"]').type('Breakfast');
-    cy.get('[data-cy="product-card-1"]')
+    cy.get('[data-cy="input-search"]').type('Break', { delay: 100 });
+    cy.get('[data-cy="product-card-0"]')
       .should('exist')
-      .and('contain', searchInput);
+      .and('contain', 'Break');
   });
 
   it('Properly Changes Items Per Page', () => {
+    cy.intercept('/products').as('fetchProducts');
     cy.visit('/');
     cy.wait('@fetchProducts');
-    const selectedValue = cy.get('[data-cy="items-per-page"]').select(3);
-    cy.get('[data-cy="products-section"]').should('have.length', selectedValue);
+    cy.get('[data-cy="items-per-page"]').select(2);
+    cy.get('[data-cy="products-section"]').children().should('have.length', 25);
   });
 
   it('Properly Paginates Products', () => {
+    cy.intercept('/products').as('fetchProducts');
     cy.visit('/');
     cy.wait('@fetchProducts');
     cy.get('[data-cy="pagination-section"]').should('exist');
 
-    // Get Card 1 on Page 1
-    const initialCardName = cy.get('[data-cy="product-card-1"]').invoke('h3');
-    cy.get('[data-cy="pagination-next"]').click();
+    // Ensure Prev is Disabled and Next and Not Disabled
+    cy.get('[data-cy="pagination-prev"]').should('be.disabled');
+    cy.get('[data-cy="pagination-next"]').should('not.be.disabled');
 
-    // Get Card 1 on Page 2
-    const newCardName = cy.get('[data-cy="product-card-1"]').invoke('h3');
-    expect(initialCardName).to.not.equal(newCardName);
+    // Go to Last Page
+    cy.get('[data-cy="pagination-4"]').click();
+    cy.get('[data-cy="pagination-next"]').should('be.disabled');
+    cy.get('[data-cy="pagination-prev"]').should('not.be.disabled');
 
-    // Get Card 1 on Page 1
-    cy.get('[data-cy="pagination-prev"]').click();
-    cy.get('[data-cy="product-card-1"]')
-      .invoke('h3')
-      .should('equal', initialCardName);
+    // Go to Mid
+    cy.get('[data-cy="pagination-2"]').click();
+    cy.get('[data-cy="pagination-next"]').should('not.be.disabled');
+    cy.get('[data-cy="pagination-prev"]').should('not.be.disabled');
   });
 });
